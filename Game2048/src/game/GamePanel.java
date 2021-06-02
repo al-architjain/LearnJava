@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Arrays;
 import java.awt.*;
+
+// import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel {
@@ -12,13 +15,18 @@ public class GamePanel extends JPanel {
     public static final int DIM = 4;
     public static final int[] _0123 = {0,1,2,3};
 
-    final AppFrame hostGame;
+    final ScorePanel scorePanel;
+    final JLabel messageLabel;
     private GameTile[] boardTiles;
     public static GameTileValue GOAL = _2048;
 
-    public GamePanel (AppFrame game) {
-        hostGame = game;
+    final static String HOWTOPLAY = "<html><b>HOW TO PLAY</b>: USE ARROW KEYS TO MOVE THE BLOCKS. PRESS <b>'R'</b> TO RESET THE GAME.</html>";
+
+    public GamePanel (ScorePanel sp, JLabel ml) {
+        scorePanel = sp;
+        messageLabel = ml;
         setFocusable(true);
+        setPreferredSize(new Dimension(350, 350));
         initBoardTiles();
     }
 
@@ -29,7 +37,8 @@ public class GamePanel extends JPanel {
         }
         addNewTile();
         addNewTile();
-        hostGame.clearStatusBar();
+        scorePanel.updateScore(getTotalScore());
+        messageLabel.setText(HOWTOPLAY);
     }
 
     // Add a new tile to a random place.
@@ -49,24 +58,28 @@ public class GamePanel extends JPanel {
 
     public void moveLeft() {
         computeMoveLeft();
+        scorePanel.updateScore(getTotalScore());
     }
 
     public void moveDown() {
         rotateTiles(90);
         computeMoveLeft();
         rotateTiles(270);
+        scorePanel.updateScore(getTotalScore());
     }
 
     public void moveRight() {
         rotateTiles(180);
         computeMoveLeft();
         rotateTiles(180);
+        scorePanel.updateScore(getTotalScore());
     }
 
     public void moveUp() {
         rotateTiles(270);
         computeMoveLeft();
         rotateTiles(90);
+        scorePanel.updateScore(getTotalScore());
     }
 
     public void computeMoveLeft() {
@@ -97,7 +110,7 @@ public class GamePanel extends JPanel {
             else if (oldLine[i].equals(prev)) {
                 newLine[j] = oldLine[i].getDoubleTile();
                 if (newLine[j].getValue() == GOAL) {
-                    hostGame.win();
+                    messageLabel.setText("<html><b>You have won the Game!</b></html>");
                 }
                 prev = GameTile.ZERO; 
                 j++; i++;
@@ -181,8 +194,19 @@ public class GamePanel extends JPanel {
         return false;
     }
 
+    private Integer getTotalScore() {
+        Integer total = 0;
+        for (int x: _0123) {
+            for(int y: _0123) {
+                GameTile t = getTileAt(x, y);
+                total += t.getValue().getValue();
+            }
+        }
+        return total;
+    }
+
     private static final Color BG_COLOR = new Color(0x282C31);
-    private static final Font STR_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 17);
+    private static final Font STR_FONT = new Font("Britannic Bold", Font.PLAIN, 25);
 
     @Override
     public void paint(Graphics g) {
@@ -208,8 +232,8 @@ public class GamePanel extends JPanel {
         g.fillRect(xOffset, yOffset, SIDE, SIDE);
         g.setColor(val.getFontColor());
         if (val.getValue() != 0)
-            g.drawString(tile.toString(), xOffset
-                    + (SIDE >> 1) - MARGIN, yOffset + (SIDE >> 1));
+            g.drawString(tile.toString(), xOffset + 5
+                    , yOffset + 40);
     }
 
     private static int offsetCoors(int arg) {

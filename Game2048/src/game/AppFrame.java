@@ -1,40 +1,41 @@
 package game;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.BorderFactory;
 
 public class AppFrame extends JFrame {
 
     private static String TITLE = "2048 Java Game";
-    public static String WIN_MSG = "Victory!";
-    public static String LOSE_MSG = "Loss! You ran out of possible Moves.";
 
-    JLabel statusBar;
+    public static JLabel statusBar;
     
     public AppFrame() {
-        this.setTitle(TITLE);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(600, 400);
-        this.setResizable(false);
-
-        statusBar = new JLabel("Status Bar text");
-        this.add(statusBar, BorderLayout.NORTH);
+        setTitle(TITLE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        setSize(new Dimension(350, 530));
+        setResizable(false);
     }
 
     public void beginGame() {
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
-    void win() {
-        statusBar.setText(WIN_MSG);
-    }
-    
-    void lose() {
-        statusBar.setText(LOSE_MSG);
-    }
-
-    void clearStatusBar() {
-        statusBar.setText(" ");
+    JLabel getStatusBar(){
+        statusBar = new JLabel(" ");
+        statusBar.setPreferredSize(new Dimension(350, 50));
+        statusBar.setBackground(new Color(0x282C31));
+        statusBar.setForeground(new Color(0xFDBC3B));
+        statusBar.setOpaque(true);
+        statusBar.setBorder(BorderFactory.createEmptyBorder(0, 15, 15, 15));
+		statusBar.setHorizontalAlignment(JLabel.CENTER);
+		statusBar.setFont(new Font("Britannic Bold", Font.PLAIN, 14));
+        return statusBar;
     }
 }
