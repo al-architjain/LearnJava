@@ -64,7 +64,7 @@ public class KeyResponse extends KeyAdapter {
             e.printStackTrace();
         }
         if (!board.canMove()) {  // can not move, game over
-            board.hostGame.lose();
+            board.messageLabel.setText("<html><b>You lost man!</b></html>");
         }
 
     }
